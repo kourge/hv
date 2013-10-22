@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"fmt"
+	"os"
 )
 
 type Writer struct {
@@ -20,5 +21,24 @@ func (w *Writer) WriteEntry(entry *Entry) (written int, err error) {
 func (e *Entry) Write(dst io.Writer) (written int, err error) {
 	w := &Writer{dst}
 	return w.WriteEntry(e)
+}
+
+func Dump(filename string, data map[string]string) (written int, err error) {
+	file, err := os.Create(filename)
+	if err != nil {
+		return
+	}
+
+	w := &Writer{file}
+	for filename, checksum := range data {
+		entry := &Entry{Filename: filename, Checksum: checksum}
+		if n, err := w.WriteEntry(entry); err == nil {
+			written += n
+		} else {
+			return written, err
+		}
+	}
+
+	return
 }
 
