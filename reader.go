@@ -43,9 +43,9 @@ func Load(filename string) (m map[string]string, err error) {
 
 	r := NewReader(file)
 	m = make(map[string]string)
-	LOOP: for {
+	for {
 		if e, err := r.ReadEntry(); err == io.EOF {
-			break LOOP
+			break
 		} else if err != nil {
 			return m, err
 		} else if e != nil {
