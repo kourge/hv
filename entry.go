@@ -52,13 +52,17 @@ func (e *Entry) Calculate(h crypto.Hash) (sum []byte, err error) {
 	return hash.Sum(nil), nil
 }
 
+func formatChecksum(h crypto.Hash, sum []byte) string {
+	return fmt.Sprintf("%x", sum)
+}
+
 func (e *Entry) Fill(h crypto.Hash) (err error) {
 	sum, err := e.Calculate(h)
 	if err != nil {
 		return
 	}
 
-	e.Checksum = fmt.Sprintf("%x", sum)
+	e.Checksum = formatChecksum(h, sum)
 	return
 }
 
@@ -68,7 +72,7 @@ func (e *Entry) Verify(h crypto.Hash) (match bool, err error) {
 		return
 	}
 
-	match = fmt.Sprintf("%x", sum) == e.Checksum
+	match = formatChecksum(h, sum) == e.Checksum
 	return
 }
 
