@@ -35,7 +35,7 @@ func (r *Reader) ReadEntry() (entry *Entry, err error) {
 	return
 }
 
-func Parse(filename string) (m map[string]string, err error) {
+func Load(filename string) (m map[string]string, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return

@@ -29,7 +29,7 @@ func main() {
 
 	filename := args[0]
 
-	if result, err := Parse(filename); err == nil {
+	if result, err := Load(filename); err == nil {
 		fmt.Printf("result = %#v\n", result)
 	} else {
 		warn("error: %v\n", err)
