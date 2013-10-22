@@ -35,6 +35,22 @@ func (r *Reader) ReadEntry() (entry *Entry, err error) {
 	return
 }
 
+func (r *Reader) Iter() chan *Entry {
+	ch := make(chan *Entry)
+	go func() {
+		for {
+			if entry, err := r.ReadEntry(); err != nil {
+				break
+			} else if entry != nil {
+				ch <- entry
+			}
+		}
+		close(ch)
+	}()
+
+	return ch
+}
+
 func Load(filename string) (m map[string]string, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
