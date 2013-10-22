@@ -5,7 +5,13 @@ import (
 	"io"
 	"fmt"
 	"crypto"
+	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha512"
 )
+var _ = md5.New
+var _ = sha1.New
+var _ = sha512.New
 
 type HashUnavailableError struct {
 	h crypto.Hash
