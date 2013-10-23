@@ -23,8 +23,7 @@ func main() {
 
 	args := flag.Args()
 	if len(args) < 1 {
-		warn("Checksum file is missing.\n")
-		os.Exit(1)
+		usage()
 	}
 
 	filename := args[0]
