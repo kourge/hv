@@ -15,6 +15,7 @@ func croak(e error) (n int, err error) {
 }
 
 var commands = []*Command {
+	cmdGenerate,
 }
 
 func usage() {
