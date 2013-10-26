@@ -14,6 +14,11 @@ func croak(e error) (n int, err error) {
 	return fmt.Fprintf(os.Stderr, "%s\n", e)
 }
 
+func die(e error) {
+	croak(e)
+	os.Exit(1)
+}
+
 var commands = []*Command {
 	cmdGenerate,
 }

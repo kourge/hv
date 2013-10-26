@@ -46,19 +46,33 @@ func generate(cmd *Command, args []string) {
 		hash.Set("SHA1")
 	}
 
-	if dirs, err := ioutil.ReadDir(cwd); err == nil {
-		for _, file := range dirs {
-			if matches(file) {
-				entry := &Entry{Filename: file.Name()}
-				if err := entry.Fill(hash.Hash); err == nil {
-					warn("%s\n", entry)
-				} else {
-					croak(err)
-				}
+	checksumFile := fmt.Sprintf("%sSUMS", hash)
+	if _, err := os.Stat(checksumFile); err == nil && !force {
+		warn("%s already exists\n", checksumFile)
+		os.Exit(1)
+	}
+	f, err := os.Create(checksumFile)
+	if err != nil {
+		die(err)
+	}
+	w := NewWriter(f)
+
+	dirs, err := ioutil.ReadDir(cwd)
+	if err != nil {
+		die(err)
+	}
+
+	for _, file := range dirs {
+		if matches(file) {
+			entry := &Entry{Filename: file.Name()}
+			if err := entry.Fill(hash.Hash); err == nil {
+				w.WriteEntry(entry)
+			} else {
+				die(err)
 			}
 		}
-	} else {
-		croak(err)
 	}
+
+	os.Exit(0)
 }
 
