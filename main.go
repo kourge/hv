@@ -21,6 +21,7 @@ func die(e error) {
 
 var commands = []*Command {
 	cmdGenerate,
+	cmdHelp,
 }
 
 func usage() {
@@ -28,15 +29,11 @@ func usage() {
 	message := strings.TrimLeft(`
 usage: %s <command>
 
-Available commands:
-
 `, "\n")
 	warn(message, program)
 
-	for _, command := range commands {
-		warn("  %s - %s\n", command.Name(), command.Short)
-	}
-	os.Exit(2)
+	PrintCommands()
+	os.Exit(1)
 }
 
 func main() {
