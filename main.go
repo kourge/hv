@@ -10,6 +10,10 @@ func warn(format string, a ...interface{}) (n int, err error) {
 	return fmt.Fprintf(os.Stderr, format, a...)
 }
 
+func croak(e error) (n int, err error) {
+	return fmt.Fprintf(os.Stderr, "%s\n", e)
+}
+
 func usage() {
 	program := os.Args[0]
 	warn("usage: %s [SUMS]\n", program)
