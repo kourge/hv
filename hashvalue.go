@@ -35,7 +35,7 @@ func (h *HashValue) Set(s string) (err error) {
 	switch strings.ToUpper(s) {
 	case "MD5": h.Hash = crypto.MD5
 	case "SHA1": h.Hash = crypto.SHA1
-	case "SHA512": h.Hash = crypto.SHA256
+	case "SHA512": h.Hash = crypto.SHA512
 	default: err = HashUnavailableError{h.Hash}
 	}
 	return
