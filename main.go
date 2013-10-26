@@ -11,7 +11,7 @@ func warn(format string, a ...interface{}) (n int, err error) {
 }
 
 func croak(e error) (n int, err error) {
-	return fmt.Fprintf(os.Stderr, "%s\n", e)
+	return warn("%s\n", e)
 }
 
 func die(e error) {
