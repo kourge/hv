@@ -5,34 +5,7 @@ import (
 	"io"
 	"fmt"
 	"crypto"
-	"crypto/md5"
-	"crypto/sha1"
-	"crypto/sha512"
 )
-var _ = md5.New
-var _ = sha1.New
-var _ = sha512.New
-
-type HashUnavailableError struct {
-	h crypto.Hash
-}
-
-func (e *HashUnavailableError) Error() string {
-	var hashName string
-	switch e.h {
-	case crypto.MD4: hashName = "MD4"
-	case crypto.MD5: hashName = "MD5"
-	case crypto.SHA1: hashName = "SHA1"
-	case crypto.SHA224: hashName = "SHA224"
-	case crypto.SHA256: hashName = "SHA256"
-	case crypto.SHA384: hashName = "SHA384"
-	case crypto.SHA512: hashName = "SHA512"
-	case crypto.MD5SHA1: hashName = "MD5SHA1"
-	case crypto.RIPEMD160: hashName = "RIPEMD160"
-	default: hashName = "unknown hash"
-	}
-	return fmt.Sprint("%s is not a known hash function or not linked into the binary", hashName)
-}
 
 type Entry struct {
 	Checksum string
@@ -45,7 +18,7 @@ func (e *Entry) String() string {
 
 func (e *Entry) Calculate(h crypto.Hash) (sum []byte, err error) {
 	if !h.Available() {
-		return nil, &HashUnavailableError{h}
+		return nil, HashUnavailableError{h}
 	}
 	hash := h.New()
 
