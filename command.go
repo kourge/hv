@@ -38,7 +38,10 @@ func (c *Command) PrintUsage(w io.Writer) {
 	}
 	if c.Runnable() {
 		fmt.Fprintf(w, "Usage: %s %s\n", program, c.Usage)
-		fmt.Fprintf(w, "%s\n\n", c.Short)
+		fmt.Fprintf(w, "%s\n", c.Short)
+		if c.Flag.NFlag() != 0 {
+			fmt.Fprint(w, "\n")
+		}
 		c.Flag.PrintDefaults()
 	}
 	fmt.Fprintln(w, strings.TrimRight(c.Long, "\n"))
