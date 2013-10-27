@@ -41,6 +41,10 @@ func matches(file os.FileInfo) bool {
 }
 
 func generate(cmd *Command, args []string) {
+	if err := os.Chdir(cwd); err != nil {
+		die(err)
+	}
+
 	hash := &hashFunction
 	if hash.String() == "" {
 		hash.Set("SHA1")
@@ -55,6 +59,7 @@ func generate(cmd *Command, args []string) {
 	if err != nil {
 		die(err)
 	}
+
 	w := NewWriter(f)
 
 	dirs, err := ioutil.ReadDir(cwd)
