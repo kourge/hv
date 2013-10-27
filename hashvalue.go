@@ -41,6 +41,10 @@ func (h *HashValue) Set(s string) (err error) {
 	return
 }
 
+func (h *HashValue) Filename() string {
+	return fmt.Sprintf("%sSUMS", h)
+}
+
 func (h *HashValue) Values() []string {
 	return []string{"MD5", "SHA1", "SHA512"}
 }

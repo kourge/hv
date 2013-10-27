@@ -50,7 +50,7 @@ func generate(cmd *Command, args []string) {
 		hash.Set("SHA1")
 	}
 
-	checksumFile := fmt.Sprintf("%sSUMS", hash)
+	checksumFile := hash.Filename()
 	if _, err := os.Stat(checksumFile); err == nil && !force {
 		warn("%s already exists\n", checksumFile)
 		os.Exit(1)
