@@ -74,7 +74,10 @@ func verify(cmd *Command, args []string) {
 	r := NewReader(checksums)
 	err = r.Each(func(entry *Entry) {
 		if ok, err := entry.Verify(hash.Hash); err != nil {
-			die(err)
+			if !silent {
+				warn("%s\n", err)
+			}
+			allMatch = false
 		} else if !ok {
 			if !silent {
 				warn("%s does not match %s\n", entry.Filename, entry.Checksum)
