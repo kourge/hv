@@ -21,6 +21,7 @@ func die(e error) {
 
 var commands = []*Command {
 	cmdGenerate,
+	cmdVerify,
 	cmdHelp,
 }
 
