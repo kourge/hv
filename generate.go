@@ -35,12 +35,6 @@ func init() {
 	f.StringVar(&cwd, "D", ".", cwdUsage)
 }
 
-func matches(file os.FileInfo) bool {
-	startsWith, endsWith := strings.HasPrefix, strings.HasSuffix
-	name, mode := file.Name(), file.Mode()
-	return mode.IsRegular() && !startsWith(name, ".") && !endsWith(name, "SUMS")
-}
-
 func generate(cmd *Command, args []string) {
 	if err := os.Chdir(cwd); err != nil {
 		die(err)
@@ -63,20 +57,20 @@ func generate(cmd *Command, args []string) {
 
 	w := NewWriter(f)
 
-	dirs, err := ioutil.ReadDir(cwd)
+	files, err := ioutil.ReadDir(cwd)
 	if err != nil {
 		die(err)
 	}
 
-	for _, file := range dirs {
-		if matches(file) {
-			entry := &Entry{Filename: file.Name()}
-			if err := entry.Fill(hash.Hash); err == nil {
-				w.WriteEntry(entry)
-			} else {
-				die(err)
-			}
+	entries := EntriesFromFiles(files)
+	for _, entry := range entries {
+		if err := entry.Fill(hash.Hash); err != nil {
+			die(err)
 		}
+	}
+
+	for _, entry := range entries {
+		w.WriteEntry(entry)
 	}
 
 	os.Exit(0)
