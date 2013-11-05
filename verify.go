@@ -9,7 +9,7 @@ import (
 
 var (
 	silent bool
-	// Declared in generate:
+	// Declared in main:
 	// hashFunction HashValue
 	// cwd string
 )
@@ -22,7 +22,8 @@ var cmdVerify = &Command{
 Verify all files for the given directory against a checksum file.`,
 }
 
-var preferredHashes = []string{"SHA512", "SHA1", "MD5"}
+// Initialized in main:
+// var preferredHashes []string
 
 func init() {
 	const (

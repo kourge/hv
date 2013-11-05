@@ -19,6 +19,13 @@ func die(e error) {
 	os.Exit(1)
 }
 
+var (
+	hashFunction HashValue
+	cwd string
+)
+
+var preferredHashes = []string{"SHA512", "SHA1", "MD5"}
+
 var commands = []*Command {
 	cmdGenerate,
 	cmdVerify,

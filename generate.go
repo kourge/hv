@@ -9,8 +9,9 @@ import (
 
 var (
 	force bool
-	hashFunction HashValue
-	cwd string
+	// Declared in main:
+	// hashFunction HashValue
+	// cwd string
 )
 
 var cmdGenerate = &Command{
