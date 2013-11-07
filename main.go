@@ -29,6 +29,7 @@ var preferredHashes = []string{"SHA512", "SHA1", "MD5"}
 var commands = []*Command {
 	cmdGenerate,
 	cmdVerify,
+	cmdDedup,
 	cmdHelp,
 }
 
