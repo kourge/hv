@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	// Declared in main:
+	// Declared in common:
 	// hashFunction HashValue
 	// cwd string
 )
@@ -21,7 +21,7 @@ var cmdDedup = &Command{
 Deduplicate all files for the given directory against a checksum file.`,
 }
 
-// Initialized in main:
+// Initialized in common:
 // var preferredHashes []string
 
 func init() {

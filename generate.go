@@ -9,7 +9,7 @@ import (
 
 var (
 	force bool
-	// Declared in main:
+	// Declared in common:
 	// hashFunction HashValue
 	// cwd string
 )

@@ -2,29 +2,8 @@ package main
 
 import (
 	"os"
-	"fmt"
 	"strings"
 )
-
-func warn(format string, a ...interface{}) (n int, err error) {
-	return fmt.Fprintf(os.Stderr, format, a...)
-}
-
-func croak(e error) (n int, err error) {
-	return warn("%s\n", e)
-}
-
-func die(e error) {
-	croak(e)
-	os.Exit(1)
-}
-
-var (
-	hashFunction HashValue
-	cwd string
-)
-
-var preferredHashes = []string{"SHA512", "SHA1", "MD5"}
 
 var commands = []*Command {
 	cmdGenerate,
