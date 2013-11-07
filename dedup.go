@@ -35,27 +35,7 @@ func init() {
 }
 
 func dedup(cmd *Command, args []string) {
-	if err := os.Chdir(cwd); err != nil {
-		die(err)
-	}
-
-	var err error
-	var hash *HashValue
-	var checksums *os.File
-
-	if hashFunction.Hash == 0x0 {
-		hash, checksums, err = findChecksumFile()
-		if err != nil {
-			die(err)
-		}
-	} else {
-		hash = &hashFunction
-		checksums, err = os.Open(hash.Filename())
-		if err != nil {
-			die(err)
-		}
-	}
-
+	err, _, checksums := setDirAndHashOptions()
 	hashes := make(map[string]*list.List)
 	r := NewReader(checksums)
 	err = r.Each(func(entry *Entry) {

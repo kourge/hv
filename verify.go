@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"os"
-	"errors"
 )
 
 var (
@@ -37,39 +36,8 @@ func init() {
 	f.StringVar(&cwd, "D", ".", cwdUsage)
 }
 
-func findChecksumFile() (hash *HashValue, file *os.File, err error) {
-	for _, tryHash := range preferredHashes {
-		hash := &HashValue{}
-		hash.Set(tryHash)
-		file, err := os.Open(hash.Filename())
-		if err == nil {
-			return hash, file, err
-		}
-	}
-	return nil, nil, errors.New("No known checksum files found in directory")
-}
-
 func verify(cmd *Command, args []string) {
-	if err := os.Chdir(cwd); err != nil {
-		die(err)
-	}
-
-	var err error
-	var hash *HashValue
-	var checksums *os.File
-
-	if hashFunction.Hash == 0x0 {
-		hash, checksums, err = findChecksumFile()
-		if err != nil {
-			die(err)
-		}
-	} else {
-		hash = &hashFunction
-		checksums, err = os.Open(hash.Filename())
-		if err != nil {
-			die(err)
-		}
-	}
+	err, hash, checksums := setDirAndHashOptions()
 
 	allMatch := true
 	r := NewReader(checksums)
