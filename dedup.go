@@ -11,11 +11,12 @@ var (
 	// Declared in common:
 	// hashFunction HashValue
 	// cwd string
+	dryRun bool
 )
 
 var cmdDedup = &Command{
 	Run: dedup,
-	Usage: `dedup [-c=hash] [-D=dir]`,
+	Usage: `dedup [-c=hash] [-D=dir] [--dryrun]`,
 	Short: "deduplicate using a checksum file",
 	Long: `
 Deduplicate all files for the given directory against a checksum file.`,
@@ -27,11 +28,13 @@ Deduplicate all files for the given directory against a checksum file.`,
 func init() {
 	const (
 		cwdUsage = "the directory for which to verify using the checksum file"
+		dryRunUsage = "only output what would have been done; do not perform any destructive operations"
 	)
 	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following in tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdDedup.Flag
 	f.Var(&hashFunction, "c", hashUsage)
 	f.StringVar(&cwd, "D", ".", cwdUsage)
+	f.BoolVar(&dryRun, "dryrun", false, dryRunUsage)
 }
 
 func dedup(cmd *Command, args []string) {
@@ -43,6 +46,10 @@ func dedup(cmd *Command, args []string) {
 	entries, err := EntriesFromChecksumFile(checksums)
 	if err != nil {
 		die(err)
+	}
+
+	if dryRun {
+		warn("# Dry run mode is on\n")
 	}
 
 	buckets := entries.BucketsByChecksum()
@@ -57,19 +64,19 @@ func promptForRemoval(duplicates *list.List, checksum string) {
 PROMPT:
 	for e, i := duplicates.Front(), 1; e != nil; e, i = e.Next(), i+1 {
 		file := e.Value.(string)
-		warn("[%d] %s\n", i, file)
+		warn("# [%d] %s\n", i, file)
 	}
-	warn("All of these have checksum %s. Keep which? ", checksum)
+	warn("# All of these have checksum %s. Keep which? ", checksum)
 
 	var choice int
 	if n, err := fmt.Scanf("%d", &choice); err == nil && n == 1 {
 		if choice < 1 || choice > duplicates.Len() {
-			warn("%d is not a valid choice\n\n", choice)
+			warn("# %d is not a valid choice\n\n", choice)
 			goto PROMPT
 		}
 		removeDuplicatesAndKeep(duplicates, choice)
 	} else {
-		warn("Please enter a number\n\n")
+		warn("# Please enter a number\n\n")
 		goto PROMPT
 	}
 }
@@ -81,16 +88,17 @@ func removeDuplicatesAndKeep(duplicates *list.List, choice int) {
 	}
 
 	file := duplicates.Remove(e).(string)
-	warn("Keeping %s\n", file)
+	warn("# Keeping %s\n", file)
 
 	for e = duplicates.Front(); e != nil; e = e.Next() {
 		file := e.Value.(string)
 
-		if err := os.Remove(file); err != nil {
-			croak(err)
-		} else {
-			warn("Removing %s\n", file)
+		if !dryRun {
+			if err := os.Remove(file); err != nil {
+				croak(err)
+			}
 		}
+		warn("rm %s\n", file)
 	}
 	warn("\n")
 }
