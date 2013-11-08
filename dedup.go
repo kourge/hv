@@ -36,21 +36,17 @@ func init() {
 
 func dedup(cmd *Command, args []string) {
 	err, _, checksums := setDirAndHashOptions()
-	hashes := make(map[string]*list.List)
-	r := NewReader(checksums)
-	err = r.Each(func(entry *Entry) {
-		bucket, exists := hashes[entry.Checksum]
-		if !exists {
-			bucket = list.New()
-			hashes[entry.Checksum] = bucket
-		}
-		bucket.PushBack(entry.Filename)
-	})
 	if err != nil {
 		die(err)
 	}
 
-	for checksum, bucket := range hashes {
+	entries, err := EntriesFromChecksumFile(checksums)
+	if err != nil {
+		die(err)
+	}
+
+	buckets := entries.BucketsByChecksum()
+	for checksum, bucket := range buckets {
 		if bucket.Len() > 1 {
 			promptForRemoval(bucket, checksum)
 		}
