@@ -38,10 +38,7 @@ func init() {
 }
 
 func dedup(cmd *Command, args []string) {
-	err, _, checksums := setDirAndHashOptions()
-	if err != nil {
-		die(err)
-	}
+	_, checksums := setDirAndHashOptions()
 
 	entries, err := EntriesFromChecksumFile(checksums)
 	if err != nil {

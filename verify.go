@@ -37,7 +37,8 @@ func init() {
 }
 
 func verify(cmd *Command, args []string) {
-	err, hash, checksums := setDirAndHashOptions()
+	var err error
+	hash, checksums := setDirAndHashOptions()
 
 	allMatch := true
 	r := NewReader(checksums)

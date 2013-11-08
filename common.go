@@ -38,7 +38,9 @@ func findChecksumFile() (hash *HashValue, file *os.File, err error) {
 	return nil, nil, errors.New("No known checksum files found in directory")
 }
 
-func setDirAndHashOptions() (err error, hash *HashValue, checksums *os.File) {
+func setDirAndHashOptions() (hash *HashValue, checksums *os.File) {
+	var err error
+
 	if err := os.Chdir(cwd); err != nil {
 		die(err)
 	}
