@@ -9,6 +9,7 @@ var commands = []*Command {
 	cmdGenerate,
 	cmdVerify,
 	cmdDedup,
+	cmdCollisions,
 	cmdHelp,
 }
 
