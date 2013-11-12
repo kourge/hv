@@ -46,7 +46,15 @@ func collisions(cmd *Command, args []string) {
 	buckets := entries.BucketsByChecksum()
 	for checksum, bucket := range buckets {
 		// Bucket files by size.
-		switch groups := GroupBySize(bucket); {
+		groups := GroupBySize(bucket)
+		if group, exists := groups[-1]; exists {
+			for e := group.Front(); e != nil; e = e.Next() {
+				err := e.Value.(error)
+				warn("%s\n", err)
+			}
+		}
+
+		switch {
 		case len(groups) == bucket.Len():
 			// All files are of different lengths. Then none of them are identical.
 			fileinfos := list.New()
@@ -89,7 +97,12 @@ func GroupBySize(entries *list.List) (groups map[int64]*list.List) {
 			group = list.New()
 			groups[size] = group
 		}
-		group.PushBack(info)
+
+		if size != -1 {
+			group.PushBack(info)
+		} else {
+			group.PushBack(err)
+		}
 	}
 	return
 }
