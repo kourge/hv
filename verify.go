@@ -15,10 +15,11 @@ var (
 
 var cmdVerify = &Command{
 	Run: verify,
-	Usage: `verify [-s] [-c=hash] [-D=dir]`,
+	Usage: `verify [-s] [-c=hash] [-D=dir] [file]`,
 	Short: "Verify using a checksum file",
 	Long: `
-Verify all files for the given directory against a checksum file.`,
+Verify all files for the given directory against a checksum file. If a specific
+file is given, only that file is verified.`,
 }
 
 // Initialized in common:
@@ -39,10 +40,19 @@ func init() {
 func verify(cmd *Command, args []string) {
 	var err error
 	hash, checksums := setDirAndHashOptions()
+	singleFileMode, singleFile := false, ""
+	if len(args) == 1 {
+		singleFileMode = true
+		singleFile = args[0]
+	}
 
 	allMatch := true
 	r := NewReader(checksums)
 	err = r.Each(func(entry *Entry) {
+		if singleFileMode && entry.Filename != singleFile {
+			return // continue
+		}
+
 		if ok, err := entry.Verify(hash.Hash); err != nil {
 			if !silent {
 				warn("%s\n", err)
