@@ -45,6 +45,11 @@ func collisions(cmd *Command, args []string) {
 
 	buckets := entries.BucketsByChecksum()
 	for checksum, bucket := range buckets {
+		// A single file for a given checksum indicates no collisions
+		if bucket.Len() == 1 {
+			continue
+		}
+
 		// Bucket files by size.
 		groups := GroupBySize(bucket)
 		if group, exists := groups[-1]; exists {
