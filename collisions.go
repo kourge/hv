@@ -29,7 +29,7 @@ func init() {
 	const (
 		cwdUsage = "the directory for which to verify using the checksum file"
 	)
-	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following in tried in order: %s", strings.Join(preferredHashes, ", "))
+	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdCollisions.Flag
 	f.Var(&hashFunction, "c", hashUsage)
 	f.StringVar(&cwd, "D", ".", cwdUsage)

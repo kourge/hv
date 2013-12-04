@@ -30,7 +30,7 @@ func init() {
 		cwdUsage = "the directory for which to verify using the checksum file"
 		dryRunUsage = "only output what would have been done; do not perform any destructive operations"
 	)
-	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following in tried in order: %s", strings.Join(preferredHashes, ", "))
+	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdDedup.Flag
 	f.Var(&hashFunction, "c", hashUsage)
 	f.StringVar(&cwd, "D", ".", cwdUsage)

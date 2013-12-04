@@ -29,7 +29,7 @@ func init() {
 		silentUsage = "silent; don't output to STDERR"
 		cwdUsage = "the directory for which to verify using the checksum file"
 	)
-	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following in tried in order: %s", strings.Join(preferredHashes, ", "))
+	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdVerify.Flag
 	f.BoolVar(&silent, "s", false, silentUsage)
 	f.Var(&hashFunction, "c", hashUsage)
