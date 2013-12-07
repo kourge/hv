@@ -64,17 +64,21 @@ func collisions(cmd *Command, args []string) {
 			fileinfos.PushBack(group.Front().Value.(os.FileInfo))
 		}
 
-		if len(groups) == bucket.Len() {
+		switch {
+		case len(groups) == bucket.Len():
 			// All files are of different lengths. Then none of them are identical,
-			// and all files under this checksum are genuinely colliding.
-			emit(checksum, fileinfos)
-		} else {
+			// and all files under this checksum are genuinely colliding. This is
+			// a plain collision.
+			emitPlain(checksum, fileinfos)
+		default:
+			// Some or all of the files are of the same length. Some of them might
+			// be genuinely identical.
 			warnSameLen(checksum, fileinfos)
 		}
 	}
 }
 
-func emit(checksum string, fileinfos *list.List) {
+func emitPlain(checksum string, fileinfos *list.List) {
 	warn("%s\n", checksum)
 	for e := fileinfos.Front(); e != nil; e = e.Next() {
 		fileinfo := e.Value.(os.FileInfo)
