@@ -20,7 +20,8 @@ var cmdGenerate = &Command{
 	Short: "Generate a checksum file",
 	Long: `
 Generate a checksum file for the given directory. The generated checksum file
-will be named %sSUMS, where %s is the chosen hash function name in all caps.`,
+will be named %sSUMS, where %s is the chosen hash function name in all caps.
+All top-level files will be accounted for; this process is not recursive.`,
 }
 
 func init() {
