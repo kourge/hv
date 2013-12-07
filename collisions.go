@@ -59,26 +59,33 @@ func collisions(cmd *Command, args []string) {
 			}
 		}
 
-		switch {
-		case len(groups) == bucket.Len():
-			// All files are of different lengths. Then none of them are identical.
-			fileinfos := list.New()
-			for _, group := range groups {
-				fileinfos.PushBack(group.Front().Value.(os.FileInfo))
-			}
+		fileinfos := list.New()
+		for _, group := range groups {
+			fileinfos.PushBack(group.Front().Value.(os.FileInfo))
+		}
+
+		if len(groups) == bucket.Len() {
+			// All files are of different lengths. Then none of them are identical,
+			// and all files under this checksum are genuinely colliding.
 			emit(checksum, fileinfos)
-		case len(groups) == 1:
-			// All files are of the same length. It is possible that they are all
-			// identical, but further checks are needed.
-		default:
-			// Some files are of the same length. Verify each set of them that
-			// share lengths and check if they are identical.
+		} else {
+			warnSameLen(checksum, fileinfos)
 		}
 	}
 }
 
 func emit(checksum string, fileinfos *list.List) {
 	warn("%s\n", checksum)
+	for e := fileinfos.Front(); e != nil; e = e.Next() {
+		fileinfo := e.Value.(os.FileInfo)
+		warn("\t%s\n", fileinfo.Name())
+	}
+	warn("\n")
+}
+
+func warnSameLen(checksum string, fileinfos *list.List) {
+	warn("%s\n", checksum)
+	warn("Some or all of the following files are of the same size but hash to the same checksum above\n")
 	for e := fileinfos.Front(); e != nil; e = e.Next() {
 		fileinfo := e.Value.(os.FileInfo)
 		warn("\t%s\n", fileinfo.Name())
