@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"io"
+	"io/ioutil"
 	"fmt"
 	"strings"
 	"crypto"
@@ -64,6 +65,14 @@ func matches(file os.FileInfo) bool {
 }
 
 type Entries []*Entry
+
+func EntriesFromPath(path string) (entries Entries, err error) {
+	files, err := ioutil.ReadDir(cwd)
+	if err != nil {
+		return
+	}
+	return EntriesFromFiles(files), nil
+}
 
 func EntriesFromFiles(files []os.FileInfo) Entries {
 	items := 0

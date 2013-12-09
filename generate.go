@@ -4,7 +4,6 @@ import (
 	"os"
 	"fmt"
 	"strings"
-	"io/ioutil"
 )
 
 var (
@@ -58,12 +57,11 @@ func generate(cmd *Command, args []string) {
 
 	w := NewWriter(f)
 
-	files, err := ioutil.ReadDir(cwd)
+	entries, err := EntriesFromPath(cwd)
 	if err != nil {
 		die(err)
 	}
 
-	entries := EntriesFromFiles(files)
 	for _, entry := range entries {
 		if err := entry.Fill(hash.Hash); err != nil {
 			die(err)
