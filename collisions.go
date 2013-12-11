@@ -97,6 +97,11 @@ func warnSameLen(checksum string, fileinfos *list.List) {
 	warn("\n")
 }
 
+// Group a list of strings representing files by their stat()ed file sizes. The
+// return value is a map, where the key is a file size and the value is a
+// list.List of os.FileInfo. For any original file that could not be stat()ed,
+// the returned error is added to the list.List corresponding to the invalid
+// size of -1.
 func GroupBySize(entries *list.List) (groups map[int64]*list.List) {
 	groups = make(map[int64]*list.List)
 	for e := entries.Front(); e != nil; e = e.Next() {
