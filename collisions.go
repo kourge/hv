@@ -59,42 +59,49 @@ func collisions(cmd *Command, args []string) {
 			}
 		}
 
-		fileinfos := list.New()
-		for _, group := range groups {
-			fileinfos.PushBack(group.Front().Value.(os.FileInfo))
-		}
-
 		switch {
 		case len(groups) == bucket.Len():
 			// All files are of different lengths. Then none of them are identical,
 			// and all files under this checksum are genuinely colliding. This is
 			// a plain collision.
-			emitPlain(checksum, fileinfos)
+			emitPlain(checksum, groups)
 		default:
 			// Some or all of the files are of the same length. Some of them might
 			// be genuinely identical.
-			warnSameLen(checksum, fileinfos)
+			emitMixed(checksum, groups)
 		}
 	}
 }
 
-func emitPlain(checksum string, fileinfos *list.List) {
+func emitPlain(checksum string, groups map[int64]*list.List) {
 	warn("%s\n", checksum)
-	for e := fileinfos.Front(); e != nil; e = e.Next() {
-		fileinfo := e.Value.(os.FileInfo)
+	for _, group := range groups {
+		fileinfo := group.Front().Value.(os.FileInfo)
 		warn("\t%s\n", fileinfo.Name())
 	}
 	warn("\n")
 }
 
-func warnSameLen(checksum string, fileinfos *list.List) {
+func emitMixed(checksum string, groups map[int64]*list.List) {
 	warn("%s\n", checksum)
-	warn("Some or all of the following files are of the same size but hash to the same checksum above\n")
-	for e := fileinfos.Front(); e != nil; e = e.Next() {
-		fileinfo := e.Value.(os.FileInfo)
-		warn("\t%s\n", fileinfo.Name())
+	for _, group := range groups {
+		if group.Len() == 1 {
+			fileinfo := group.Front().Value.(os.FileInfo)
+			warn("\t%s\n\n", fileinfo.Name())
+			continue
+		}
+
+		buckets, errs := GroupByContent(group)
+		for _, bucket := range buckets {
+			for _, lazyfile := range bucket.Files {
+				warn("\t%s\n", lazyfile.Name())
+			}
+			warn("\n")
+		}
+		for _, err := range errs {
+			warn("\t%s\n", err)
+		}
 	}
-	warn("\n")
 }
 
 // Group a list of strings representing files by their stat()ed file sizes. The
@@ -126,5 +133,26 @@ func GroupBySize(entries *list.List) (groups map[int64]*list.List) {
 		}
 	}
 	return
+}
+
+// Segment a list of strings representing files by their content treated as a
+// byte array. Returns an array of pointers to a Bucket, each of which contain
+// an array of pointers to a LazyFile. All LazyFiles within the same bucket are
+// byte-by-byte identical.
+func GroupByContent(entries *list.List) (buckets Buckets, errs []error) {
+	if entries.Len() == 0 {
+		return nil, nil
+	}
+
+	b := &LazyFileBucketer{}
+	for e := entries.Front(); e != nil; e = e.Next() {
+		fileinfo := e.Value.(os.FileInfo)
+		file := &LazyFile{FileInfo: fileinfo}
+		if err := b.Add(file); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return b.Buckets, errs
 }
 
