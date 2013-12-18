@@ -19,7 +19,11 @@ var cmdVerify = &Command{
 	Short: "Verify using a checksum file",
 	Long: `
 Verify all files for the given directory against a checksum file. If a specific
-file is given, only that file is verified.`,
+file is given, only that file is verified.
+
+If verification is successful, then the exit status will be 0 and no output will
+be written. If there is a checksum mismatch, then the exit status will be 1 and
+the mismatch(es) in question will be written to STDERR unless silent mode is on.`,
 }
 
 // Initialized in common:
