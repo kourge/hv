@@ -19,7 +19,16 @@ var cmdCollisions = &Command{
 	Short: "Find hash collisions within a checksum file",
 	Long: `
 Find all instances of hash collisions for the given directory's checksum file, i.e.
-display all sets of files that have the same checksum but are not content-identical.`,
+display all sets of files that have the same checksum but are not content-identical.
+Under a particular checksum, files that are actually identical will be clustered
+together, while files that are distinct are separated by a blank line.
+
+Expensive operations are avoided: if two files share the same checksum but are of
+different length, they are considered to be colliding and their contents are not
+actually compared.
+
+Warning: if your checksum file is not up-to-date or is incorrect, then the result
+of running this will be incorrect.`,
 }
 
 // Initialized in common:
@@ -77,9 +86,8 @@ func emitPlain(checksum string, groups map[int64]*list.List) {
 	warn("%s\n", checksum)
 	for _, group := range groups {
 		fileinfo := group.Front().Value.(os.FileInfo)
-		warn("\t%s\n", fileinfo.Name())
+		warn("\t%s\n\n", fileinfo.Name())
 	}
-	warn("\n")
 }
 
 func emitMixed(checksum string, groups map[int64]*list.List) {
