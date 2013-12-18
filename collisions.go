@@ -36,7 +36,7 @@ of running this will be incorrect.`,
 
 func init() {
 	const (
-		cwdUsage = "the directory for which to verify using the checksum file"
+		cwdUsage = "the directory in which to look for collisions using its checksum file"
 	)
 	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdCollisions.Flag
