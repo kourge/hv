@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"strings"
+	"errors"
 )
 
 var (
@@ -55,8 +56,7 @@ func generate(cmd *Command, args []string) {
 		var err error
 		checksumFile := hash.Filename()
 		if _, err := os.Stat(checksumFile); err == nil && !force {
-			warn("%s already exists\n", checksumFile)
-			os.Exit(1)
+			die(errors.New(fmt.Sprintf("%s already exists", checksumFile)))
 		}
 		f, err = os.Create(checksumFile)
 		if err != nil {

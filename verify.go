@@ -59,7 +59,7 @@ func verify(cmd *Command, args []string) {
 
 		if ok, err := entry.Verify(hash.Hash); err != nil {
 			if !silent {
-				warn("%s\n", err)
+				croak(err)
 			}
 			allMatch = false
 		} else if !ok {

@@ -64,7 +64,7 @@ func collisions(cmd *Command, args []string) {
 		if group, exists := groups[-1]; exists {
 			for e := group.Front(); e != nil; e = e.Next() {
 				err := e.Value.(error)
-				warn("%s\n", err)
+				croak(err)
 			}
 		}
 
