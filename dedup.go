@@ -32,7 +32,7 @@ of running this will be incorrect.`,
 
 func init() {
 	const (
-		cwdUsage = "the directory for which to verify using the checksum file"
+		cwdUsage = "the directory to dedup using its checksum file"
 		dryRunUsage = "only output what would have been done; do not perform any destructive operations"
 	)
 	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
