@@ -23,6 +23,7 @@ var (
 	hashFunction HashValue
 	cwd string
 	dryRun bool
+	silent bool
 )
 
 var preferredHashes = []string{"SHA512", "SHA1", "MD5"}

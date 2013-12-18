@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	silent bool
 	// Declared in common:
 	// hashFunction HashValue
 	// cwd string
+	// silent bool
 )
 
 var cmdVerify = &Command{
