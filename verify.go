@@ -32,7 +32,7 @@ the mismatch(es) in question will be written to STDERR unless silent mode is on.
 func init() {
 	const (
 		silentUsage = "silent; don't output to STDERR"
-		cwdUsage = "the directory for which to verify using the checksum file"
+		cwdUsage = "the directory to verify using its checksum file"
 	)
 	hashUsage := fmt.Sprintf("the hash to use; if unspecified, the following are tried in order: %s", strings.Join(preferredHashes, ", "))
 	f := &cmdVerify.Flag
