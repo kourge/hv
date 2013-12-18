@@ -19,7 +19,12 @@ var cmdDedup = &Command{
 	Usage: `dedup [-c=hash] [-D=dir] [--dryrun]`,
 	Short: "deduplicate using a checksum file",
 	Long: `
-Deduplicate all files for the given directory against a checksum file.`,
+Deduplicate all files for the given directory against a checksum file. For every
+instance where multiple files share the same checksum, you are interactively
+prompted to pick one to keep, while the rest are deleted.
+
+Warning: if your checksum file is not up-to-date or is incorrect, then the result
+of running this will be incorrect.`,
 }
 
 // Initialized in common:
