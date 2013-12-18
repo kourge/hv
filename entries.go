@@ -4,6 +4,7 @@ import (
 	"os"
 	"io/ioutil"
 	"container/list"
+	"strings"
 )
 
 type Entries []*Entry
@@ -14,6 +15,12 @@ func EntriesFromPath(path string) (entries Entries, err error) {
 		return
 	}
 	return EntriesFromFiles(files), nil
+}
+
+func matches(file os.FileInfo) bool {
+	startsWith, endsWith := strings.HasPrefix, strings.HasSuffix
+	name, mode := file.Name(), file.Mode()
+	return mode.IsRegular() && !startsWith(name, ".") && !endsWith(name, "SUMS")
 }
 
 func EntriesFromFiles(files []os.FileInfo) Entries {

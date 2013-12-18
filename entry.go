@@ -4,7 +4,6 @@ import (
 	"os"
 	"io"
 	"fmt"
-	"strings"
 	"crypto"
 )
 
@@ -54,11 +53,5 @@ func (e *Entry) Verify(h crypto.Hash) (match bool, err error) {
 
 	match = formatChecksum(h, sum) == e.Checksum
 	return
-}
-
-func matches(file os.FileInfo) bool {
-	startsWith, endsWith := strings.HasPrefix, strings.HasSuffix
-	name, mode := file.Name(), file.Mode()
-	return mode.IsRegular() && !startsWith(name, ".") && !endsWith(name, "SUMS")
 }
 
