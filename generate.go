@@ -15,7 +15,7 @@ var (
 
 var cmdGenerate = &Command{
 	Run: generate,
-	Usage: `generate [-f] [-c=hash] [-D=dir]`,
+	Usage: `generate [-f] [-c=hash] [-D=dir] [-]`,
 	Short: "Generate a checksum file",
 	Long: `
 Generate a checksum file for the given directory. The generated checksum file
@@ -45,14 +45,20 @@ func generate(cmd *Command, args []string) {
 		hash.Set("SHA1")
 	}
 
-	checksumFile := hash.Filename()
-	if _, err := os.Stat(checksumFile); err == nil && !force {
-		warn("%s already exists\n", checksumFile)
-		os.Exit(1)
-	}
-	f, err := os.Create(checksumFile)
-	if err != nil {
-		die(err)
+	var f *os.File
+	if len(args) > 0 && args[0] == "-" {
+		f = os.Stdout
+	} else {
+		var err error
+		checksumFile := hash.Filename()
+		if _, err := os.Stat(checksumFile); err == nil && !force {
+			warn("%s already exists\n", checksumFile)
+			os.Exit(1)
+		}
+		f, err = os.Create(checksumFile)
+		if err != nil {
+			die(err)
+		}
 	}
 
 	w := NewWriter(f)
