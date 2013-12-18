@@ -22,6 +22,7 @@ func die(e error) {
 var (
 	hashFunction HashValue
 	cwd string
+	dryRun bool
 )
 
 var preferredHashes = []string{"SHA512", "SHA1", "MD5"}

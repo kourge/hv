@@ -11,7 +11,7 @@ var (
 	// Declared in common:
 	// hashFunction HashValue
 	// cwd string
-	dryRun bool
+	// dryRun bool
 )
 
 var cmdDedup = &Command{
