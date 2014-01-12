@@ -14,7 +14,7 @@ var (
 )
 
 var cmdCollisions = &Command{
-	Run: collisions,
+	Run: runCollisions,
 	Usage: `collisions [-c=hash] [-D=dir]`,
 	Short: "Find hash collisions within a checksum file",
 	Long: `
@@ -44,7 +44,7 @@ func init() {
 	f.StringVar(&cwd, "D", ".", cwdUsage)
 }
 
-func collisions(cmd *Command, args []string) {
+func runCollisions(cmd *Command, args []string) {
 	_, checksums := setDirAndHashOptions()
 
 	entries, err := EntriesFromChecksumFile(checksums)

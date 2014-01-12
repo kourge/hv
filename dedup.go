@@ -15,7 +15,7 @@ var (
 )
 
 var cmdDedup = &Command{
-	Run: dedup,
+	Run: runDedup,
 	Usage: `dedup [-c=hash] [-D=dir] [--dryrun]`,
 	Short: "deduplicate using a checksum file",
 	Long: `
@@ -42,7 +42,7 @@ func init() {
 	f.BoolVar(&dryRun, "dryrun", false, dryRunUsage)
 }
 
-func dedup(cmd *Command, args []string) {
+func runDedup(cmd *Command, args []string) {
 	_, checksums := setDirAndHashOptions()
 
 	entries, err := EntriesFromChecksumFile(checksums)

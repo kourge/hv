@@ -14,7 +14,7 @@ var (
 )
 
 var cmdVerify = &Command{
-	Run: verify,
+	Run: runVerify,
 	Usage: `verify [-s] [-c=hash] [-D=dir] [file]`,
 	Short: "Verify using a checksum file",
 	Long: `
@@ -41,7 +41,7 @@ func init() {
 	f.StringVar(&cwd, "D", ".", cwdUsage)
 }
 
-func verify(cmd *Command, args []string) {
+func runVerify(cmd *Command, args []string) {
 	var err error
 	hash, checksums := setDirAndHashOptions()
 	singleFileMode, singleFile := false, ""

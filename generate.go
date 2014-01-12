@@ -15,7 +15,7 @@ var (
 )
 
 var cmdGenerate = &Command{
-	Run: generate,
+	Run: runGenerate,
 	Usage: `generate [-f] [-c=hash] [-D=dir] [-]`,
 	Short: "Generate a checksum file",
 	Long: `
@@ -39,7 +39,7 @@ func init() {
 	f.StringVar(&cwd, "D", ".", cwdUsage)
 }
 
-func generate(cmd *Command, args []string) {
+func runGenerate(cmd *Command, args []string) {
 	if err := os.Chdir(cwd); err != nil {
 		die(err)
 	}
